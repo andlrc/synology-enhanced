@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Synology Enhanced Behaviour
 // @namespace   https://github.com/andlrc/synology-enhanced
-// @version     0.0.2
+// @version     0.0.3
 // @description Enhanced behaviours for Sonology NAS
 // @match       *://*.quickconnect.to*
 // @match       *://*.*.quickconnect.to*
@@ -16,11 +16,11 @@
 		var sortedSnapShot = null;
 		var index = 0;
 		document.addEventListener('keydown', e => {
-			if (e.which == 17) {
+			if (e.keyCode == 17) {
 				sortedSnapShot = getOpenWindowsSorted();
 				index = 0;
 			}
-			if (e.which == 9 && e.ctrlKey) {
+			if (e.keyCode == 9 && e.ctrlKey) {
 				
 				index += + (e.shiftKey ? -1 : 1);
 				index = index % sortedSnapShot.length;

@@ -1,0 +1,11 @@
+# tmp files for win + mac
+Thumbs.db
+.DS_Store
+
+# npm + nodejs
+node_modules
+npm-debug.log
+
+# vim tmp files
+*.swp
+*.swo

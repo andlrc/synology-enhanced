@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name        Tab in Synology NAS web interface
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.9
+// @version     0.0.10
 // @description Enable <CapsLock>+<Tab> and <Alt>+<Tab> to toggle windows
 // @match       *://*.quickconnect.to*
 // @match       *://*.*.quickconnect.to*
-// @match       *://192.168.1.70*
-// @match       *://192.168.1.71*
+// @match       *://192.168.1.70:5000*
+// @match       *://192.168.1.71:5000*
 // @author      Andreas Louv
 // @grant       none
 // @updateURL   https://github.com/andlrc/userscripts/raw/master/synology.user.js

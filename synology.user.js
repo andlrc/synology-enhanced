@@ -7,7 +7,7 @@
 // @match       *://*.*.quickconnect.to*
 // @author      Andreas Louv
 // @grant       none
-// @updateURL   https://rawgit.com/andlrc/sonology-enhanced/master/synology.user.js
+// @updateURL   https://github.com/andlrc/synology-enhanced/raw/master/synology.user.js
 // ==/UserScript==
 (function() {
 	enableCtrlTab();

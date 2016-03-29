@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name        Synology Enhanced Behaviour
 // @namespace   https://github.com/andlrc/synology-enhanced
-// @version     0.0.3
+// @version     0.0.4
 // @description Enhanced behaviours for Sonology NAS
 // @match       *://*.quickconnect.to*
 // @match       *://*.*.quickconnect.to*
 // @author      Andreas Louv
 // @grant       none
-// @updateURL   https://rawgit.com/andlrc/sonology-enhanced/master/index.js
+// @updateURL   https://rawgit.com/andlrc/sonology-enhanced/master/synology.user.js
 // ==/UserScript==
 (function() {
 	enableCtrlTab();

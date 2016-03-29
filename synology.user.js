@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Synology Enhanced Behaviour
 // @namespace   https://github.com/andlrc/synology-enhanced
-// @version     0.0.4
+// @version     0.0.5
 // @description Enhanced behaviours for Sonology NAS
 // @match       *://*.quickconnect.to*
 // @match       *://*.*.quickconnect.to*

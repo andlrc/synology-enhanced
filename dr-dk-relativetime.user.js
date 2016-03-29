@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name        Relative Time in DR.DK live tv
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.1
+// @version     0.0.2
 // @description Show relative time instead of absolute time on dr.dk/tv/live
 // @match       *://dr.dk/tv/live*
+// @match       *://www.dr.dk/tv/live*
 // @author      Andreas Louv
 // @grant       none
 // @updateURL   https://github.com/andlrc/userscripts/raw/master/dr-dk-relativetime.user.js

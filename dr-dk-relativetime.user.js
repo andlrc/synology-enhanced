@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Relative Time in DR.DK live tv
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.2
+// @version     0.0.3
 // @description Show relative time instead of absolute time on dr.dk/tv/live
 // @match       *://dr.dk/tv/live*
 // @match       *://www.dr.dk/tv/live*
@@ -36,7 +36,15 @@
 			if (!el.dataset._date) {
 				el.dataset._date = el.innerHTML;
 			}
-			el.innerHTML = moment(el.dataset._date, 'HH:mm').fromNow();
+			var date = moment(el.dataset._date, 'HH:mm');
+
+			// The date can be above 24 and and on the next day, moment interpretent
+			// this as -x hours instead of +x, assume no program is send after 5am
+			// next day
+			if (date.hours() < 5) {
+				date.add(24, 'hours');
+			}
+			el.innerHTML = date.fromNow();
 		});
 	}
 })();

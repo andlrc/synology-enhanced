@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name        Synology Enhanced Behaviour
+// @name        Tab in Synology NAS web interface
 // @namespace   https://github.com/andlrc/synology-enhanced
-// @version     0.0.7
-// @description Enhanced behaviours for Sonology NAS
+// @version     0.0.8
+// @description Enable <CapsLock>+<Tab> and <Alt>+<Tab> to toggle windows
 // @match       *://*.quickconnect.to*
 // @match       *://*.*.quickconnect.to*
 // @match       *://192.168.1.70*
@@ -12,36 +12,54 @@
 // @updateURL   https://github.com/andlrc/synology-enhanced/raw/master/synology.user.js
 // ==/UserScript==
 (function() {
-	enableCtrlTab();
+	"use strict";
 
-	function enableCtrlTab() { 
-		var sortedSnapShot = null;
-		var index = 0;
-		document.addEventListener('keydown', e => {
-			if (e.keyCode == 17 || e.keyCode == 18) {
-				sortedSnapShot = getOpenWindowsSorted();
-				index = 0;
-			}
-			if (e.keyCode == 9 && (e.ctrlKey || e.altKey)) {
-				
-				index += + (e.shiftKey ? -1 : 1);
-				index = index % sortedSnapShot.length;
-				if (index < 0) {
-					index += sortedSnapShot.length;
-				}
+	var sortedSnapShot = null;
+	var index = 0;
+	var isDown = false;
 
-				var event = new MouseEvent('mousedown', {
-					'view': window,
-					'bubbles': true,
-					'cancelable': true
-				});
-				sortedSnapShot[index].getEl().dom.dispatchEvent(event);
-				
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
+	var keyTriggers = {
+		// Alt
+		18: true,
+
+		// CapsLock
+		20: true
+	};
+
+	document.addEventListener('keydown', e => {
+		if (keyTriggers[e.keyCode]) {
+			sortedSnapShot = getOpenWindowsSorted();
+			index = 0;
+			isDown = true;
+		}
+		if (e.keyCode == 9 && isDown) {
+			
+			index += + (e.shiftKey ? -1 : 1);
+			index = index % sortedSnapShot.length;
+			if (index < 0) {
+				index += sortedSnapShot.length;
 			}
+
+			focusWindow(sortedSnapShot[index]);
+			
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+		}
+	});
+	document.addEventListener('keyup', e=> {
+		if (keyTriggers[e.keyCode]) {
+			isDown = false;
+		}
+	});
+
+	function focusWindow(me) {
+		var event = new MouseEvent('mousedown', {
+			'view': window,
+			'bubbles': true,
+			'cancelable': true
 		});
+		me.getEl().dom.dispatchEvent(event);
 	}
 	function getOpenWindowsSorted() {
 		return getOpenWindows().sort((a, b) => b._lastAccess - a._lastAccess);

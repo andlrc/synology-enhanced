@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Relative Time in DR.DK live tv
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.7
+// @version     0.0.8
 // @description Show relative time instead of absolute time on dr.dk/tv/live
 // @match       *://dr.dk/tv/live*
 // @match       *://www.dr.dk/tv/live*
@@ -36,8 +36,9 @@
 	function updateTime(el) {
 		var times = [].slice.call(document.querySelectorAll('time'));
 		times.forEach(function(el) {
-			if (!el.dataset._time) {
+			if (!el.dataset.stored) {
 				el.setAttribute('title', el.innerHTML);
+				el.dataset.stored = true;
 			}
 			var time = el.getAttribute('title');
 			var date = timeObjects[time] || (timeObjects[time] = moment(time, 'HH:mm'));

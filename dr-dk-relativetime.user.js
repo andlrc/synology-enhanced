@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Relative Time in DR.DK live tv
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.4
+// @version     0.0.5
 // @description Show relative time instead of absolute time on dr.dk/tv/live
 // @match       *://dr.dk/tv/live*
 // @match       *://www.dr.dk/tv/live*
@@ -11,6 +11,8 @@
 // ==/UserScript==
 (function() {
 	"use strict";
+
+	var timeObjects = {};
 
 	// Load moment.js unless dr.dk decides to load it them self
 	if (typeof moment == 'undefined') {
@@ -22,8 +24,6 @@
 	else {
 		afterLoad();
 	}
-
-	var timeObjects = {};
 
 	function afterLoad() {
 		if (typeof moment != 'undefined') {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Relative Time in DR.DK live tv
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.3
+// @version     0.0.4
 // @description Show relative time instead of absolute time on dr.dk/tv/live
 // @match       *://dr.dk/tv/live*
 // @match       *://www.dr.dk/tv/live*
@@ -22,6 +22,9 @@
 	else {
 		afterLoad();
 	}
+
+	var timeObjects = {};
+
 	function afterLoad() {
 		if (typeof moment != 'undefined') {
 			clearTimeout(timer_afterLoad);
@@ -33,10 +36,11 @@
 	function updateTime(el) {
 		var times = [].slice.call(document.querySelectorAll('time'));
 		times.forEach(function(el) {
-			if (!el.dataset._date) {
-				el.dataset._date = el.innerHTML;
+			if (!el.dataset._time) {
+				el.dataset._time = el.innerHTML;
 			}
-			var date = moment(el.dataset._date, 'HH:mm');
+			var time = el.dataset._time;
+			var date = timeObjects[time] || (timeObjects[time] = moment(time, 'HH:mm'));
 
 			// The date can be above 24 and and on the next day, moment interpretent
 			// this as -x hours instead of +x, assume no program is send after 5am

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Relative Time in DR.DK live tv
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.5
+// @version     0.0.6
 // @description Show relative time instead of absolute time on dr.dk/tv/live
 // @match       *://dr.dk/tv/live*
 // @match       *://www.dr.dk/tv/live*
@@ -29,7 +29,7 @@
 		if (typeof moment != 'undefined') {
 			clearTimeout(timer_afterLoad);
 
-			setInterval(updateTime, 1000);
+			setInterval(updateTime, 30000);
 			updateTime();
 		}
 	}

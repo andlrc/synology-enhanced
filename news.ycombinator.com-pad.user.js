@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Add small padding between upvote button and title/subtext
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.2
+// @version     0.0.3
 // @description Add small padding to allow better navigation with cvim 'fxx'
 // @match       *://news.ycombinator.com/*
 // @author      Andreas Louv
@@ -13,5 +13,5 @@
 
   var style = document.createElement('style');
   document.head.appendChild(style);
-  style.sheet.insertRule(`td.votelinks { padding-right: 7px; }`);
+  style.sheet.insertRule(`td.votelinks { padding-right: 9px; }`);
 })();

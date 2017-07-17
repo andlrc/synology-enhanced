@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.6
+// @version     0.0.7
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
@@ -71,7 +71,7 @@
 
 		if (!err) { /* Show list of all errors */
 			errIx = -1;
-			return gotoError();
+			return clist();
 		}
 
 		window.scrollTo(0, err.lineEl.offsetTop);
@@ -80,6 +80,16 @@
 		while (errDom.firstChild)
 			errDom.removeChild(errDom.firstChild);
 		errDom.appendChild(textDom);
+	}
+
+	function clist() {
+		var textDom = document.createTextNode(
+			'Press 0, 1, 2, 3 <CR>, g, or G');
+		while (errDom.firstChild)
+			errDom.removeChild(errDom.firstChild);
+		errDom.appendChild(textDom);
+
+		gotoError();
 	}
 
 	document.addEventListener('keydown', evt => {
@@ -100,7 +110,7 @@
 			s = 30;
 			break;
 		case 71:	/* g and G */
-			gotoError();
+			clist();
 			break;
 		}
 
@@ -128,6 +138,6 @@
 
 	document.body.appendChild(panelDom);
 
-	gotoError();
+	clist();
 })();
 

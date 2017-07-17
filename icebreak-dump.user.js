@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.4
+// @version     0.0.5
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
@@ -12,76 +12,135 @@
 (function() {
 	"use strict";
 
-    if (typeof gotoError === 'undefined')
-        return;
+	if (typeof gotoError === 'undefined')
+		return;
 
-    var lineEls = [];
-    [].forEach.call(document.querySelectorAll('span.error'), (errEl) => {
-        var columns = errEl.innerText.match(/\*RNF\d+\s+(\d+)\s+(\d+)\s+([^]*)/);
-        if (!columns)
-            return;
+	var errIx = -1;
+	var errors = [];
+	[].forEach.call(document.querySelectorAll('span.error'), (errEl) => {
+		var columns = errEl.innerText.match(/\*RNF\d+\s+(\d+)\s+(\d+)\s+([^]*)/);
+		if (!columns)
+			return;
 
-        var [_, severity, lineNo, errMsg] = columns;
-        if (severity < 20)
-            errEl.className = 'warning';
+		var [_, severity, lineNo, errMsg] = columns;
+		if (severity < 20)
+			errEl.className = 'warning';
 
-        var lineEl = [].find.call(document.querySelectorAll('a > span.normal'), (el) => {
-            return el.innerText.trim().split(/\s+/)[0] == lineNo;
-        });
-        if (lineEl) {
-            lineEl.className = errEl.className;
-            lineEl.style.cursor = 'pointer';
-            lineEl.addEventListener('click', cnext.bind(null, lineEl));
-            lineEl.setAttribute('title', errMsg.trim().replace(/\s+/g, ' '));
+		var lineEl = [].find.call(document.querySelectorAll('a > span.normal'), el => {
+			return el.innerText.trim().split(/\s+/)[0] == lineNo;
+		});
+		if (lineEl) {
+			lineEl.className = errEl.className;
+			lineEl.style.cursor = 'pointer';
+			lineEl.addEventListener('click', cnext);
 
-            errEl.parentNode.addEventListener('click', function(evt) {
-                evt.preventDefault();
+			errEl.parentNode.addEventListener('click', evt => {
+				evt.preventDefault();
+				errIx = errors.findIndex(err => err.lineEl == lineEl);
+				cc();
+			});
 
-                zt(lineEl);
-            });
+			errors.push({
+				errEl: errEl,
+				lineEl: lineEl,
+				severity: Number(severity),
+				lineNo: Number(lineNo),
+				errMsg: errMsg.trim().replace(/\s+/g, ' ')
+			});
+		}
+	});
 
-            lineEls.push(lineEl);
-        }
-    });
+	function cprev(s) {
+		--errIx;
+		if (typeof s == 'number') {
+			errIx = errors.findIndex((v, k) => k <= errIx && v.severity >= s);
+		}
+		cc();
+	}
 
-    function cnext(el) {
-        var nextIx = lineEls.indexOf(el) + 1;
-        if (nextIx == lineEls.length)
-            gotoError();
-        else
-            zt(lineEls[nextIx]);
-    }
+	function cnext(s) {
+		errIx++;
+		if (typeof s == 'number') {
+			errIx = errors.findIndex((v, k) => k >= errIx && v.severity >= s);
+		}
+		cc();
+	}
 
-    function zt(el) {
-        window.scrollTo(0, el.offsetTop);
-        while (errDom.firstChild)
-            errDom.removeChild(errDom.firstChild);
+	function cc() {
+		var err = errors[errIx];
 
-        var textDom = document.createTextNode(el.getAttribute('title'));
-        errDom.appendChild(textDom);
-    }
+		if (!err) { /* Show list of all errors */
+			errIx = -1;
+			return gotoError();
+		}
 
-    var panelDom = document.createElement('div');
-    panelDom.style.position = 'fixed';
-    panelDom.style.backgroundColor = 'black';
-    panelDom.style.color = 'white';
-    panelDom.style.fontFamily = 'monospace';
-    panelDom.style.fontSize = '14px';
-    panelDom.style.padding = '20px';
-    panelDom.style.left = 0;
-    panelDom.style.right = 0;
-    panelDom.style.bottom = 0;
+		window.scrollTo(0, err.lineEl.offsetTop);
 
-    var btn = document.createElement('button');
-    btn.innerText = 'GOTO Errors';
-    btn.addEventListener('click', gotoError);
-    btn.style.float = 'right';
-    panelDom.appendChild(btn);
+		var textDom = document.createTextNode(err.errMsg);
+		while (errDom.firstChild)
+			errDom.removeChild(errDom.firstChild);
+		errDom.appendChild(textDom);
+	}
 
-    var errDom = document.createElement('div');
-    panelDom.appendChild(errDom);
+	document.addEventListener('keydown', evt => {
+		var s = -1;
+		switch (evt.which) {
+		case 13:	/* Enter */
+				s = 0;
+				break;
+		case 49:	/* 1 */
+				s = 10;
+				break;
+		case 50:	/* 2 */
+				s = 20;
+				break;
+		case 51:	/* 3 */
+				s = 30;
+				break;
+		}
 
-    document.body.appendChild(panelDom);
+		if (s > -1) {
+			if (evt.shiftKey)
+				cprev(s);
+			else
+				cnext(s);
+		}
+	});
 
-    gotoError();
+	var panelDom = document.createElement('div');
+	panelDom.style.position = 'fixed';
+	panelDom.style.backgroundColor = 'black';
+	panelDom.style.color = 'white';
+	panelDom.style.fontFamily = 'monospace';
+	panelDom.style.fontSize = '14px';
+	panelDom.style.padding = '20px';
+	panelDom.style.left = 0;
+	panelDom.style.right = 0;
+	panelDom.style.bottom = 0;
+
+	var btn = document.createElement('button');
+	btn.innerText = 'List';
+	btn.addEventListener('click', gotoError);
+	btn.style.float = 'right';
+	panelDom.appendChild(btn);
+
+	var btn = document.createElement('button');
+	btn.innerText = 'Next';
+	btn.addEventListener('click', cprev);
+	btn.style.float = 'right';
+	panelDom.appendChild(btn);
+
+	var btn = document.createElement('button');
+	btn.innerText = 'Prev';
+	btn.addEventListener('click', cprev);
+	btn.style.float = 'right';
+	panelDom.appendChild(btn);
+
+	var errDom = document.createElement('div');
+	panelDom.appendChild(errDom);
+
+	document.body.appendChild(panelDom);
+
+	gotoError();
 })();
+

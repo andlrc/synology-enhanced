@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.3
+// @version     0.0.4
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
@@ -40,7 +40,6 @@
                 zt(lineEl);
             });
 
-
             lineEls.push(lineEl);
         }
     });
@@ -55,15 +54,34 @@
 
     function zt(el) {
         window.scrollTo(0, el.offsetTop);
+        while (errDom.firstChild)
+            errDom.removeChild(errDom.firstChild);
+
+        var textDom = document.createTextNode(el.getAttribute('title'));
+        errDom.appendChild(textDom);
     }
 
+    var panelDom = document.createElement('div');
+    panelDom.style.position = 'fixed';
+    panelDom.style.backgroundColor = 'black';
+    panelDom.style.color = 'white';
+    panelDom.style.fontFamily = 'monospace';
+    panelDom.style.fontSize = '14px';
+    panelDom.style.padding = '20px';
+    panelDom.style.left = 0;
+    panelDom.style.right = 0;
+    panelDom.style.bottom = 0;
+
     var btn = document.createElement('button');
-    btn.innerText = 'GOTO Error';
+    btn.innerText = 'GOTO Errors';
     btn.addEventListener('click', gotoError);
-    btn.style.position = 'fixed';
-    btn.style.right = '20px';
-    btn.style.bottom = '20px';
-    document.body.appendChild(btn);
+    btn.style.float = 'right';
+    panelDom.appendChild(btn);
+
+    var errDom = document.createElement('div');
+    panelDom.appendChild(errDom);
+
+    document.body.appendChild(panelDom);
 
     gotoError();
 })();

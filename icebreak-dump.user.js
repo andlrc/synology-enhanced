@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.5
+// @version     0.0.6
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
@@ -85,18 +85,23 @@
 	document.addEventListener('keydown', evt => {
 		var s = -1;
 		switch (evt.which) {
+		case 48:	/* 0 */
+				/* Fallthough */
 		case 13:	/* Enter */
-				s = 0;
-				break;
+			s = 0;
+			break;
 		case 49:	/* 1 */
-				s = 10;
-				break;
+			s = 10;
+			break;
 		case 50:	/* 2 */
-				s = 20;
-				break;
+			s = 20;
+			break;
 		case 51:	/* 3 */
-				s = 30;
-				break;
+			s = 30;
+			break;
+		case 71:	/* g and G */
+			gotoError();
+			break;
 		}
 
 		if (s > -1) {
@@ -117,24 +122,6 @@
 	panelDom.style.left = 0;
 	panelDom.style.right = 0;
 	panelDom.style.bottom = 0;
-
-	var btn = document.createElement('button');
-	btn.innerText = 'List';
-	btn.addEventListener('click', gotoError);
-	btn.style.float = 'right';
-	panelDom.appendChild(btn);
-
-	var btn = document.createElement('button');
-	btn.innerText = 'Next';
-	btn.addEventListener('click', cprev);
-	btn.style.float = 'right';
-	panelDom.appendChild(btn);
-
-	var btn = document.createElement('button');
-	btn.innerText = 'Prev';
-	btn.addEventListener('click', cprev);
-	btn.style.float = 'right';
-	panelDom.appendChild(btn);
 
 	var errDom = document.createElement('div');
 	panelDom.appendChild(errDom);

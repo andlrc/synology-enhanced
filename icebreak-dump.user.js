@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.1
+// @version     0.0.2
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
@@ -20,9 +20,11 @@
         var lineEl = [].find.call(document.querySelectorAll('a > span.normal'), (el) => {
             return el.innerText.trim().split(/\s+/)[0] == lineNo;
         });
-        if (lineEl)
+        if (lineEl) {
             lineEl.className = errEl.className;
-
+            lineEl.style.cursor = 'pointer';
+            lineEl.addEventListener('click', gotoError);
+        }
         errEl.parentNode.addEventListener('click', function(evt) {
             evt.preventDefault();
 

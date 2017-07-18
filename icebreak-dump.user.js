@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.8
+// @version     0.0.9
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
@@ -56,7 +56,15 @@
 	function cprev(s) {
 		--errIx;
 		if (typeof s == 'number') {
-			errIx = errors.findIndex((v, k) => k <= errIx && v.severity >= s);
+			/* Where is Array.prototype.findLastIndex(fn) ?? */
+			var i, foundIx;
+			for (i = errors.length - 1, foundIx = -1; i >= 0; i--) {
+				if (i <= errIx && errors[i].severity >= s) {
+					foundIx = i;
+					break;
+				}
+			}
+			errIx = foundIx;
 		}
 		cc();
 	}
@@ -71,7 +79,6 @@
 
 	function cc() {
 		var err = errors[errIx];
-
 		if (!err) { /* Show list of all errors */
 			errIx = -1;
 			return clist();
@@ -98,23 +105,23 @@
 	document.addEventListener('keydown', evt => {
 		var s = -1;
 		switch (evt.which) {
-		case 48:	/* 0 */
+			case 48:	/* 0 */
 				/* Fallthough */
-		case 13:	/* Enter */
-			s = 0;
-			break;
-		case 49:	/* 1 */
-			s = 10;
-			break;
-		case 50:	/* 2 */
-			s = 20;
-			break;
-		case 51:	/* 3 */
-			s = 30;
-			break;
-		case 71:	/* g and G */
-			clist();
-			break;
+			case 13:	/* Enter */
+				s = 0;
+				break;
+			case 49:	/* 1 */
+				s = 10;
+				break;
+			case 50:	/* 2 */
+				s = 20;
+				break;
+			case 51:	/* 3 */
+				s = 30;
+				break;
+			case 71:	/* g and G */
+				clist();
+				break;
 		}
 
 		if (s > -1) {
@@ -143,4 +150,3 @@
 
 	clist();
 })();
-

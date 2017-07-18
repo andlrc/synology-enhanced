@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.7
+// @version     0.0.8
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
@@ -15,6 +15,11 @@
 	if (typeof gotoError === 'undefined')
 		return;
 
+	var lineEls = [].reduce.call(document.querySelectorAll('a > span.normal'), (ret, el) => {
+		ret[el.innerText.trim().split(/\s+/)[0]] = el;
+		return ret;
+	}, {});
+
 	var errIx = -1;
 	var errors = [];
 	[].forEach.call(document.querySelectorAll('span.error'), (errEl) => {
@@ -26,9 +31,7 @@
 		if (severity < 20)
 			errEl.className = 'warning';
 
-		var lineEl = [].find.call(document.querySelectorAll('a > span.normal'), el => {
-			return el.innerText.trim().split(/\s+/)[0] == lineNo;
-		});
+		var lineEl = lineEls[lineNo];
 		if (lineEl) {
 			lineEl.className = errEl.className;
 			lineEl.style.cursor = 'pointer';

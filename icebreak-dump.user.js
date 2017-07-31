@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.9
+// @version     0.0.10
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
@@ -14,6 +14,8 @@
 
 	if (typeof gotoError === 'undefined')
 		return;
+
+	document.body.style.paddingBottom = '30px';
 
 	var lineEls = [].reduce.call(document.querySelectorAll('a > span.normal'), (ret, el) => {
 		ret[el.innerText.trim().split(/\s+/)[0]] = el;
@@ -79,7 +81,7 @@
 
 	function cc() {
 		var err = errors[errIx];
-		if (!err) { /* Show list of all errors */
+		if (!err) {	/* Show list of all errors */
 			errIx = -1;
 			return clist();
 		}
@@ -102,26 +104,35 @@
 		gotoError();
 	}
 
+	function norm_G() {
+		window.scrollTo(0, document.body.offsetHeight);
+	}
+
 	document.addEventListener('keydown', evt => {
 		var s = -1;
 		switch (evt.which) {
-			case 48:	/* 0 */
-				/* Fallthough */
-			case 13:	/* Enter */
-				s = 0;
-				break;
-			case 49:	/* 1 */
-				s = 10;
-				break;
-			case 50:	/* 2 */
-				s = 20;
-				break;
-			case 51:	/* 3 */
-				s = 30;
-				break;
-			case 71:	/* g and G */
+		case 48:	/* 0: go to error */
+			s = 0;
+			break;
+		case 49:	/* 1: go to severity >= 10 error */
+			s = 10;
+			break;
+		case 50:	/* 2: go to severity >= 20 error */
+			s = 20;
+			break;
+		case 51:	/* 3: go to severity >= 30 error */
+			s = 30;
+			break;
+		case 69:	/* e and E */
+			if (evt.shiftKey)	/* E: go to list of errors */
 				clist();
-				break;
+			else /* e: go to error */
+				s = 0;
+			break;
+		case 71:	/* g and G */
+			if (evt.shiftKey)	/* G: go to bottom of page */
+				norm_G();
+			break;
 		}
 
 		if (s > -1) {
@@ -139,6 +150,7 @@
 	panelDom.style.fontFamily = 'monospace';
 	panelDom.style.fontSize = '14px';
 	panelDom.style.padding = '20px';
+	panelDom.style.lineHeight = '10px';
 	panelDom.style.left = 0;
 	panelDom.style.right = 0;
 	panelDom.style.bottom = 0;

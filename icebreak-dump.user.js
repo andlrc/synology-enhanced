@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name        Better IceBreak dump
 // @namespace   https://github.com/andlrc/userscripts
-// @version     0.0.10
+// @version     0.0.11
 // @description Better IceBreak dump
 // @match       *://*.admin.workmule.dk/*
 // @match       *://dksrv206:*/*
+// @match       *://192.168.5.206:*/*
 // @author      Andreas Louv
 // @grant       none
 // @updateURL   https://github.com/andlrc/userscripts/raw/master/icebreak-dump.user.js
@@ -53,6 +54,11 @@
 				errMsg: errMsg.trim().replace(/\s+/g, ' ')
 			});
 		}
+	});
+
+	[].forEach.call(document.querySelectorAll('span'), (el) => {
+		if (el.innerText.match(/Service program \w+ not created./))
+			el.className = 'error';
 	});
 
 	function cprev(s) {
